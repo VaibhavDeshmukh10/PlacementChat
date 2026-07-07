@@ -304,34 +304,49 @@ const corsOptions = {
     const allowedOrigins = [
       process.env.CLIENT_URL,
       process.env.FRONTEND_URL,
-      // Add production domains here
+      "https://placement-chat-client-12m2.vercel.app"
     ].filter(Boolean);
-    
-    // In production, be more strict about origins
-    if (process.env.NODE_ENV === 'production') {
-      if (!origin || !allowedOrigins.includes(origin)) {
-        console.warn(`CORS blocked origin: ${origin}`);
-        return callback(new Error('CORS policy violation'));
-      }
-    }
-    
-    // Allow configured origins
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],
-  exposedHeaders: ['X-Request-ID'],
-  maxAge: 86400, // 24 hours
-  optionsSuccessStatus: 200,
-  preflightContinue: false
-};
 
+    // Allow requests without Origin
+    // (Render health checks, browser direct access, curl, Postman)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.warn("CORS blocked origin:", origin);
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+
+  credentials: true,
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "X-Request-ID"
+  ],
+
+  exposedHeaders: [
+    "X-Request-ID"
+  ],
+
+  maxAge: 86400,
+  optionsSuccessStatus: 200
+};
 // Request validation with enhanced security checks
 const validateRequest = (schema) => {
   return (req, res, next) => {
