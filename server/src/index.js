@@ -347,17 +347,17 @@ app.use("/api/users", userRoutes);
 app.use("/api/upload", uploadRoutes);
 
 // Serve built frontend in production
-if (NODE_ENV === 'production') {
-  const clientDist = path.join(__dirname, "../client/dist");
-  app.use(express.static(clientDist, { maxAge: "30d" }));
+// if (NODE_ENV === 'production') {
+//   const clientDist = path.join(__dirname, "../client/dist");
+//   app.use(express.static(clientDist, { maxAge: "30d" }));
 
-  app.get("*", (req, res, next) => {
-    if (req.path.startsWith("/api/")) {
-      return next();
-    }
-    res.sendFile(path.join(clientDist, "index.html"));
-  });
-}
+//   app.get("*", (req, res, next) => {
+//     if (req.path.startsWith("/api/")) {
+//       return next();
+//     }
+//     res.sendFile(path.join(clientDist, "index.html"));
+//   });
+// }
 
 // Global security middleware for all responses
 app.use((req, res, next) => {
